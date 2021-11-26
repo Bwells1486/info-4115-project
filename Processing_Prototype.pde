@@ -62,25 +62,27 @@ void draw() {
     ellipse(500, 184, 220, 220);
 
     drawRoom();
-    
-    if (circleOver) {
-      background(293);
-    }
 
 }
 
 void drawRoom() {
     // Room Walls
     int margin = 30;
-    int roomX = margin;
-    int roomY = 400;
+    int roomX = margin + 6;
+    int roomY = 406;
     
     // Translate (0,0) to the middle of the program
     pushMatrix();
-    translate(roomX + 6, roomY + 6);
+    translate(roomX, roomY);
+    
+    mouseX -= roomX;
+    mouseY -= roomY;
     
     update(mouseX, mouseY);
-
+    
+    mouseX += roomX;
+    mouseY += roomY;
+    
     stroke(0);
     strokeWeight(6);
     fill(255);
@@ -99,13 +101,29 @@ void drawRoom() {
     
     // Draw lights
     
-    fill(221, 107, 77, 191.25);
+    fill(221, 107, 77);
     noStroke();
     ellipse(circleX, circleY, circleSize, circleSize);
 
 
     popMatrix();
 
+}
+
+
+void mouseClicked() {
+  if (circleOver) {
+    color c = get(mouseX, mouseY);
+    fill(10);
+    cp5.get(Textfield.class, "Red").setText(String.valueOf(red(c)));
+    cp5.get(Textfield.class, "Green").setText(String.valueOf(green(c)));
+    cp5.get(Textfield.class, "Blue").setText(String.valueOf(blue(c)));
+  }
+  else {
+    cp5.get(Textfield.class, "Red").setText("");
+    cp5.get(Textfield.class, "Green").setText("");
+    cp5.get(Textfield.class, "Blue").setText("");
+  }
 }
 
 public void clear() {
