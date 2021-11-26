@@ -3,84 +3,148 @@ import controlP5.*;
 ControlP5 cp5;
 // NEED TO TAKE VALS AND PUT THEM ON THE ELLIPSE AS A COLOR
 String textValue = "";
+boolean circleOver = false;
+int circleX, circleY;  // Position of circle button
+int circleSize = 100;   // Diameter of circle
 
 void setup() {
-  size(700,400);
-  
-  PFont font = createFont("arial",20);
-  
-  cp5 = new ControlP5(this);
-  
-  cp5.addTextfield("Red")
-     .setPosition(20,100)
-     .setSize(200,40)
-     .setFont(font)
-     .setFocus(true)
-     .setColor(color(255,0,0))
-      .setAutoClear(false)
-     ;
-     
-     
+    size(700, 800);
+
+    cp5 = new ControlP5(this);
+    
+  circleX = 20;
+  circleY = 20;
+
+    setupChanger();
+}
+
+public void setupChanger() {
+    PFont font = createFont("arial", 20);
+
+
+    cp5.addTextfield("Red")
+        .setPosition(20, 100)
+        .setSize(200, 40)
+        .setFont(font)
+        .setFocus(true)
+        .setColor(color(255, 0, 0))
+        .setAutoClear(false);
+
     cp5.addTextfield("Green")
-     .setPosition(20,240)
-     .setSize(200,40)
-     .setFont(font)
-     .setFocus(true)
-     .setColor(color(255,0,0))
-      .setAutoClear(false)
-     ;
-                 
-  cp5.addTextfield("Blue")
-     .setPosition(20,170)
-     .setSize(200,40)
-     .setFont(createFont("arial",20))
-     .setAutoClear(false)
-     ;
-     
+        .setPosition(20, 240)
+        .setSize(200, 40)
+        .setFont(font)
+        .setFocus(true)
+        .setColor(color(255, 0, 0))
+        .setAutoClear(false);
 
-       
-  cp5.addBang("clear")
-     .setPosition(240,170)
-     .setSize(80,40)
-     .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-     ;    
-  
+    cp5.addTextfield("Blue")
+        .setPosition(20, 170)
+        .setSize(200, 40)
+        .setFont(createFont("arial", 20))
+        .setAutoClear(false);
 
-     
-  textFont(font);
+    cp5.addBang("clear")
+        .setPosition(240, 170)
+        .setSize(80, 40)
+        .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+    textFont(font);
 }
 
 void draw() {
-  background(0);
-  fill(255);
-  text(cp5.get(Textfield.class,"Red").getText(), 360,130);
-  text(textValue, 360,180);
-  
-  
-  ellipse(500, 184, 220, 220);
+
+    background(0);
+    fill(255);
+    text(cp5.get(Textfield.class, "Red").getText(), 360, 130);
+    text(textValue, 360, 180);
+
+    ellipse(500, 184, 220, 220);
+
+    drawRoom();
+    
+    if (circleOver) {
+      background(293);
+    }
+
+}
+
+void drawRoom() {
+    // Room Walls
+    int margin = 30;
+    int roomX = margin;
+    int roomY = 400;
+    
+    // Translate (0,0) to the middle of the program
+    pushMatrix();
+    translate(roomX + 6, roomY + 6);
+    
+    update(mouseX, mouseY);
+
+    stroke(0);
+    strokeWeight(6);
+    fill(255);
+    rect(0, 0, 610, 220);
+
+    // Furniture
+    noFill();
+    strokeWeight(3);
+    stroke(0);
+
+    rect(15, 15, 60, 175);
+
+    rect(180, (220 / 2) - 20, 175, 40);
+
+    rect(width - (margin * 3) - 60, 30, 30, 140);
+    
+    // Draw lights
+    
+    fill(221, 107, 77, 191.25);
+    noStroke();
+    ellipse(circleX, circleY, circleSize, circleSize);
+
+
+    popMatrix();
+
 }
 
 public void clear() {
 
- // can clear vals 
+    // can clear vals 
+}
+
+void update(int x, int y) {
+  if( overCircle(circleX, circleY, circleSize) ) {
+    circleOver = true;
+  } else {
+    circleOver = false;
+  }
 }
 
 void controlEvent(ControlEvent theEvent) {
-  if(theEvent.isAssignableFrom(Textfield.class)) {
-    println("controlEvent: accessing a string from controller '"
-            +theEvent.getName()+"': "
-            +theEvent.getStringValue()
-            );
-  }
+    if (theEvent.isAssignableFrom(Textfield.class)) {
+        println("controlEvent: accessing a string from controller '" +
+            theEvent.getName() + "': " +
+            theEvent.getStringValue()
+        );
+    }
 }
 
 
 public void input(String theText) {
-  // automatically receives results from controller input
-  println("a textfield event for controller 'input' : "+theText);
+    // automatically receives results from controller input
+    println("a textfield event for controller 'input' : " + theText);
 }
 
-
+boolean overCircle(int x, int y, int diameter) {
+  float disX = x - mouseX;
+  float disY = y - mouseY;
+  if(sqrt(sq(disX) + sq(disY)) < diameter/2 ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 
 /*
