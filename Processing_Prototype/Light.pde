@@ -18,8 +18,9 @@ class Light {
   void display() {
     stroke(0);
     fill(c);
+    noStroke();
     ellipseMode(CENTER);
-    circle(xpos, ypos, 220);
+    circle(xpos, ypos, 100);
   }
   
   void changeDisplay(int rLight, int gLight, int bLight) {
