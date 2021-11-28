@@ -62,7 +62,6 @@ void draw() {
 
     background(0);
     fill(255);
-    text(cp5.get(Textfield.class, "Red").getText(), 360, 130);
     text(textValue, 360, 180);
 
     ellipse(500, 184, 220, 220);
@@ -107,10 +106,7 @@ void drawRoom() {
     rect(width - (margin * 3) - 60, 30, 30, 140);
     
     // Draw lights
-    
-    fill(221, 107, 77);
-    noStroke();
-    ellipse(circleX, circleY, circleSize, circleSize);
+    light1.display();
 
 
     popMatrix();
