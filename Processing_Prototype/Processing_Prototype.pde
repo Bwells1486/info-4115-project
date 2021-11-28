@@ -45,7 +45,9 @@ public void setupChanger() {
     cp5.addTextfield("Blue")
         .setPosition(20, 170)
         .setSize(200, 40)
-        .setFont(createFont("arial", 20))
+        .setFont(font)
+        .setFocus(true)
+        .setColor(color(0, 0, 255))
         .setAutoClear(false);
 
     cp5.addBang("clear")
