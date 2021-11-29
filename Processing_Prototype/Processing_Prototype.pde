@@ -1,23 +1,38 @@
 import controlP5.*;
+import java.util.*;
 
 ControlP5 cp5;
 // NEED TO TAKE VALS AND PUT THEM ON THE ELLIPSE AS A COLOR
 String textValue = "";
 boolean circleOver = false;
-int circleX, circleY;  // Position of circle button
-int circleSize = 100;   // Diameter of circle
+boolean editLight = false;
+boolean selectedLight = false;
+
+int circleX, circleY; // Position of circle button
+
+color previewColour = 255;
+
+Textfield redInput;
+Textfield greenInput;
+Textfield blueInput;
 
 Light light1; // Add Lights
+List < Light > lightList = new ArrayList < Light > ();
+
+Light currLight;
+
 
 void setup() {
     size(700, 800);
 
     cp5 = new ControlP5(this);
-    
-  circleX = 20;
-  circleY = 20;
-  
-  light1 = new Light(200, 100, 50, "kitchen", 25, 25); // Light Constructor
+
+    circleX = 20;
+    circleY = 20;
+
+    light1 = new Light(200, 100, 50, "kitchen", 25, 25, 100); // Light Constructor
+
+    lightList.add(light1);
 
     setupChanger();
 }
@@ -26,32 +41,41 @@ public void setupChanger() {
     PFont font = createFont("arial", 20);
 
 
-    cp5.addTextfield("Red")
+    redInput = cp5.addTextfield("Red")
         .setPosition(20, 100)
         .setSize(200, 40)
         .setFont(font)
         .setFocus(true)
         .setColor(color(255, 0, 0))
-        .setAutoClear(false);
+        .setAutoClear(false)
+        .setText("");
 
-    cp5.addTextfield("Green")
+    greenInput = cp5.addTextfield("Green")
         .setPosition(20, 240)
         .setSize(200, 40)
         .setFont(font)
         .setFocus(true)
         .setColor(color(255, 0, 0))
-        .setAutoClear(false);
+        .setAutoClear(false)
+        .setText("");
 
-    cp5.addTextfield("Blue")
+    blueInput = cp5.addTextfield("Blue")
         .setPosition(20, 170)
         .setSize(200, 40)
         .setFont(font)
         .setFocus(true)
-        .setColor(color(0, 0, 255))
-        .setAutoClear(false);
+        .setColor(color(255, 0, 0))
+        .setAutoClear(false)
+        .setText("");
+
 
     cp5.addBang("clear")
         .setPosition(240, 170)
+        .setSize(80, 40)
+        .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+        
+    cp5.addBang("save")
+        .setPosition(240, 230)
         .setSize(80, 40)
         .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -61,34 +85,103 @@ public void setupChanger() {
 void draw() {
 
     background(0);
-    fill(255);
+    fill(previewColour);
     text(textValue, 360, 180);
-
     ellipse(500, 184, 220, 220);
 
     drawRoom();
-    
+
+    validateTextField(redInput);
+    validateTextField(greenInput);
+    validateTextField(blueInput);
+
+    if (editLight) {
+        changeDisplay();
+    }
+
 
 }
+
+void mouseClicked() {
+
+    if (selectedLight) {
+        fill(10);
+        redInput.setText(String.valueOf(red(currLight.c)));
+        greenInput.setText(String.valueOf(green(currLight.c)));
+        blueInput.setText(String.valueOf(blue(currLight.c)));
+
+        editLight = currLight != null;
+        selectedLight = false;
+    }
+
+    if (!editLight) {
+
+        redInput.setText("");
+        greenInput.setText("");
+        blueInput.setText("");
+    }
+}
+
+public void save() {
+
+  clear();
+}
+
+public void clear() {
+  
+    editLight = false;
+    currLight = null;
+    
+    redInput.setText("");
+    greenInput.setText("");
+    blueInput.setText("");
+    
+    previewColour = color(255);
+}
+
+void update() {
+
+    for (Light light: lightList) {
+        if (overCircle(light.xpos, light.ypos, light.diameter) && mousePressed) {
+            currLight = light;
+            selectedLight = true;
+            break;
+        }
+
+        currLight = null;
+
+    }
+
+}
+
+void controlEvent(ControlEvent theEvent) {
+    if (theEvent.isAssignableFrom(Textfield.class)) {
+        println("controlEvent: accessing a string from controller '" +
+            theEvent.getName() + "': " +
+            theEvent.getStringValue()
+        );
+    }
+}
+
 
 void drawRoom() {
     // Room Walls
     int margin = 30;
     int roomX = margin + 6;
     int roomY = 406;
-    
+
     // Translate (0,0) to the middle of the program
     pushMatrix();
     translate(roomX, roomY);
-    
+
     mouseX -= roomX;
     mouseY -= roomY;
-    
-    update(mouseX, mouseY);
-    
+
+    update();
+
     mouseX += roomX;
     mouseY += roomY;
-    
+
     stroke(0);
     strokeWeight(6);
     fill(255);
@@ -104,7 +197,7 @@ void drawRoom() {
     rect(180, (220 / 2) - 20, 175, 40);
 
     rect(width - (margin * 3) - 60, 30, 30, 140);
-    
+
     // Draw lights
     light1.display();
 
@@ -113,58 +206,68 @@ void drawRoom() {
 
 }
 
+public void validateTextField(Textfield textField) {
 
-void mouseClicked() {
-  if (circleOver) {
-    color c = get(mouseX, mouseY);
-    fill(10);
-    cp5.get(Textfield.class, "Red").setText(String.valueOf(red(c)));
-    cp5.get(Textfield.class, "Green").setText(String.valueOf(green(c)));
-    cp5.get(Textfield.class, "Blue").setText(String.valueOf(blue(c)));
-  }
-  else {
-    cp5.get(Textfield.class, "Red").setText("");
-    cp5.get(Textfield.class, "Green").setText("");
-    cp5.get(Textfield.class, "Blue").setText("");
-  }
-}
+    if (keyPressed && textField.isFocus()) {
+        float n;
+        try {
+            n = Float.parseFloat(textField.getText().replace(',', '.')); // may throw exception
+            if (!withinColourRange(n)) {
+                throw new NumberFormatException(); // throw to catch below
+            }
 
-public void clear() {
-
-    // can clear vals 
-}
-
-void update(int x, int y) {
-  if( overCircle(circleX, circleY, circleSize) ) {
-    circleOver = true;
-  } else {
-    circleOver = false;
-  }
-}
-
-void controlEvent(ControlEvent theEvent) {
-    if (theEvent.isAssignableFrom(Textfield.class)) {
-        println("controlEvent: accessing a string from controller '" +
-            theEvent.getName() + "': " +
-            theEvent.getStringValue()
-        );
+        } catch (Exception e2) {
+            String t;
+            if (textField.getText().length() > 1) {
+                t = textField.getText().substring(0, textField.getText().length() - 1);
+            } else {
+                t = "";
+            }
+            textField.setText(t);
+        }
     }
 }
 
+public void changeDisplay() {
+
+    float redColour = verifyColour(redInput.getText());
+    float greenColour = verifyColour(greenInput.getText());
+    float blueColour = verifyColour(blueInput.getText());
+
+    boolean validColour = withinColourRange(redColour) && withinColourRange(greenColour) && withinColourRange(blueColour);
+
+    if (validColour) {
+        previewColour = color(redColour, greenColour, blueColour);
+    }
+}
 
 public void input(String theText) {
     // automatically receives results from controller input
     println("a textfield event for controller 'input' : " + theText);
 }
 
-boolean overCircle(int x, int y, int diameter) {
-  float disX = x - mouseX;
-  float disY = y - mouseY;
-  if(sqrt(sq(disX) + sq(disY)) < diameter/2 ) {
-    return true;
-  } else {
-    return false;
-  }
+private boolean withinColourRange(float n) {
+    return n >= 0 && n <= 255;
+}
+
+private float verifyColour(String text) {
+      if (text.equals("")) {
+        return 0;
+    } else {
+        return Float.parseFloat(text);
+    }
+  
+}
+
+
+boolean overCircle(float x, float y, int diameter) {
+    float disX = x - mouseX;
+    float disY = y - mouseY;
+    if (sqrt(sq(disX) + sq(disY)) < diameter / 2) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 
