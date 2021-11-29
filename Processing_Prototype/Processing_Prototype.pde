@@ -94,75 +94,8 @@ void draw() {
     validateTextField(redInput);
     validateTextField(greenInput);
     validateTextField(blueInput);
-
-    if (editLight) {
-        changeDisplay();
-    }
-
-
-}
-
-void mouseClicked() {
-
-    if (selectedLight) {
-        fill(10);
-        redInput.setText(String.valueOf(red(currLight.c)));
-        greenInput.setText(String.valueOf(green(currLight.c)));
-        blueInput.setText(String.valueOf(blue(currLight.c)));
-
-        editLight = currLight != null;
-        selectedLight = false;
-    }
-
-    if (!editLight) {
-
-        redInput.setText("");
-        greenInput.setText("");
-        blueInput.setText("");
-    }
-}
-
-public void save() {
-
-  clear();
-}
-
-public void clear() {
-  
-    editLight = false;
-    currLight = null;
     
-    redInput.setText("");
-    greenInput.setText("");
-    blueInput.setText("");
-    
-    previewColour = color(255);
 }
-
-void update() {
-
-    for (Light light: lightList) {
-        if (overCircle(light.xpos, light.ypos, light.diameter) && mousePressed) {
-            currLight = light;
-            selectedLight = true;
-            break;
-        }
-
-        currLight = null;
-
-    }
-
-}
-
-void controlEvent(ControlEvent theEvent) {
-    if (theEvent.isAssignableFrom(Textfield.class)) {
-        println("controlEvent: accessing a string from controller '" +
-            theEvent.getName() + "': " +
-            theEvent.getStringValue()
-        );
-    }
-}
-
 
 void drawRoom() {
     // Room Walls
@@ -203,7 +136,88 @@ void drawRoom() {
 
 
     popMatrix();
+    
+}
 
+void update() {
+  
+  if (currLight == null)
+    getSelectedLight();
+  else
+    updatePreview();
+
+}
+
+void getSelectedLight() {
+    for (Light light: lightList) {
+      if (light.mouseClicked()) {
+        
+        currLight = light;
+        selectedLight = true;
+        
+        break;
+        }
+
+    }
+}
+
+void mouseClicked() {
+    if (currLight != null && selectedLight) {
+      initializePreview(currLight);
+      selectedLight = false;
+    }
+
+}
+
+public void save() {
+  
+  currLight.changeColour(red(previewColour), green(previewColour), blue(previewColour));
+
+  clear();
+}
+
+public void clear() {
+  
+    editLight = false;
+    currLight = null;
+    
+    redInput.setText("");
+    greenInput.setText("");
+    blueInput.setText("");
+    
+    previewColour = color(255);
+}
+
+void initializePreview(Light light) {
+  
+  redInput.setText(String.valueOf(red(light.c)));
+  greenInput.setText(String.valueOf(green(light.c)));
+  blueInput.setText(String.valueOf(blue(light.c)));
+  
+  previewColour = color(light.c);
+
+}
+
+public void updatePreview() {
+
+    float redColour = verifyColour(redInput.getText());
+    float greenColour = verifyColour(greenInput.getText());
+    float blueColour = verifyColour(blueInput.getText());
+
+    boolean validColour = withinColourRange(redColour) && withinColourRange(greenColour) && withinColourRange(blueColour);
+
+    if (validColour) {
+        previewColour = color(redColour, greenColour, blueColour);
+    }
+}
+
+void controlEvent(ControlEvent theEvent) {
+    if (theEvent.isAssignableFrom(Textfield.class)) {
+        println("controlEvent: accessing a string from controller '" +
+            theEvent.getName() + "': " +
+            theEvent.getStringValue()
+        );
+    }
 }
 
 public void validateTextField(Textfield textField) {
@@ -228,19 +242,6 @@ public void validateTextField(Textfield textField) {
     }
 }
 
-public void changeDisplay() {
-
-    float redColour = verifyColour(redInput.getText());
-    float greenColour = verifyColour(greenInput.getText());
-    float blueColour = verifyColour(blueInput.getText());
-
-    boolean validColour = withinColourRange(redColour) && withinColourRange(greenColour) && withinColourRange(blueColour);
-
-    if (validColour) {
-        previewColour = color(redColour, greenColour, blueColour);
-    }
-}
-
 public void input(String theText) {
     // automatically receives results from controller input
     println("a textfield event for controller 'input' : " + theText);
@@ -257,17 +258,6 @@ private float verifyColour(String text) {
         return Float.parseFloat(text);
     }
   
-}
-
-
-boolean overCircle(float x, float y, int diameter) {
-    float disX = x - mouseX;
-    float disY = y - mouseY;
-    if (sqrt(sq(disX) + sq(disY)) < diameter / 2) {
-        return true;
-    } else {
-        return false;
-    }
 }
 
 
