@@ -11,6 +11,7 @@ boolean selectedLight = false;
 int circleX, circleY; // Position of circle button
 
 color previewColour = 255;
+color initialColour = 255;
 
 Textfield redInput;
 Textfield greenInput;
@@ -94,6 +95,8 @@ void draw() {
     fill(previewColour);
     text(textValue, 360, 180);
     ellipse(500, 184, 220, 220);
+    fill(initialColour);
+    ellipse(630, 90, 75, 75);
 
     drawRoom();
 
@@ -198,6 +201,7 @@ public void clear() {
     blueInput.setText("");
 
     previewColour = color(255);
+    initialColour = color(255);
 }
 
 void initializePreview(Light light) {
@@ -216,6 +220,7 @@ void initializePreview(Light light) {
     greenInput.setColor(color(0, 0, green));
 
     previewColour = color(red, green, blue);
+    initialColour = color(red, green, blue);
 
 }
 
@@ -229,6 +234,9 @@ public void updatePreview() {
 
     if (validColour) {
         previewColour = color(redColour, greenColour, blueColour);
+        redInput.setColor(color(redColour, 0, 0));
+        blueInput.setColor(color(0, blueColour, 0));
+        greenInput.setColor(color(0, 0, greenColour));
     }
 }
 
