@@ -16,7 +16,7 @@ Textfield redInput;
 Textfield greenInput;
 Textfield blueInput;
 
-Light light1; // Add Lights
+Light light1, light2, light3, light4; // Add Lights
 List < Light > lightList = new ArrayList < Light > ();
 
 Light currLight;
@@ -30,9 +30,15 @@ void setup() {
     circleX = 20;
     circleY = 20;
 
-    light1 = new Light(200, 100, 50, "kitchen", 25, 25, 100); // Light Constructor
+    light1 = new Light(int(random(1, 255)), int(random(1, 255)), int(random(1, 255)), "kitchen", int(random(10, 600)), int(random(10, 210)), int(random(50, 150))); // Light Constructor
+    light2 = new Light(int(random(1, 255)), int(random(1, 255)), int(random(1, 255)), "kitchen", int(random(10, 600)), int(random(10, 210)), int(random(50, 150))); // Light Constructor
+    light3 = new Light(int(random(1, 255)), int(random(1, 255)), int(random(1, 255)), "kitchen", int(random(10, 600)), int(random(10, 210)), int(random(50, 150))); // Light Constructor
+    light4 = new Light(int(random(1, 255)), int(random(1, 255)), int(random(1, 255)), "kitchen", int(random(10, 600)), int(random(10, 210)), int(random(50, 150))); // Light Constructor
 
     lightList.add(light1);
+    lightList.add(light2);
+    lightList.add(light3);
+    lightList.add(light4);
 
     setupChanger();
 }
