@@ -61,7 +61,7 @@ public void setupChanger() {
         .setSize(200, 40)
         .setFont(font)
         .setFocus(true)
-        .setColor(color(255, 0, 0))
+        .setColor(color(0, 255, 0))
         .setAutoClear(false)
         .setText("");
 
@@ -70,7 +70,7 @@ public void setupChanger() {
         .setSize(200, 40)
         .setFont(font)
         .setFocus(true)
-        .setColor(color(255, 0, 0))
+        .setColor(color(0, 0, 255))
         .setAutoClear(false)
         .setText("");
 
@@ -207,8 +207,13 @@ void initializePreview(Light light) {
     int blue = light.blueLight;
 
     redInput.setText(String.valueOf(red));
+    redInput.setColor(color(red, 0, 0));
+    
     greenInput.setText(String.valueOf(green));
+    blueInput.setColor(color(0, blue, 0));
+    
     blueInput.setText(String.valueOf(blue));
+    greenInput.setColor(color(0, 0, green));
 
     previewColour = color(red, green, blue);
 
