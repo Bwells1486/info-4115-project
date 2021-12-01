@@ -162,6 +162,7 @@ void getSelectedLight() {
         if (light.mouseClicked()) {
 
             currLight = light;
+            currLight.selected = true;
             selectedLight = true;
 
             break;
@@ -194,6 +195,7 @@ public void save() {
 public void clear() {
 
     editLight = false;
+    currLight.selected = false;
     currLight = null;
 
     redInput.setText("");
