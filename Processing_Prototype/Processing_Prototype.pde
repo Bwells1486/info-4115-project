@@ -31,10 +31,10 @@ void setup() {
     circleX = 20;
     circleY = 20;
 
-    light1 = new Light(int(random(1, 255)), int(random(1, 255)), int(random(1, 255)), "kitchen", int(random(10, 600)), int(random(10, 210)), int(random(50, 150))); // Light Constructor
-    light2 = new Light(int(random(1, 255)), int(random(1, 255)), int(random(1, 255)), "kitchen", int(random(10, 600)), int(random(10, 210)), int(random(50, 150))); // Light Constructor
-    light3 = new Light(int(random(1, 255)), int(random(1, 255)), int(random(1, 255)), "kitchen", int(random(10, 600)), int(random(10, 210)), int(random(50, 150))); // Light Constructor
-    light4 = new Light(int(random(1, 255)), int(random(1, 255)), int(random(1, 255)), "kitchen", int(random(10, 600)), int(random(10, 210)), int(random(50, 150))); // Light Constructor
+    light1 = new Light(int(random(1, 255)), int(random(1, 255)), int(random(1, 255)), 1, int(random(10, 600)), int(random(10, 210)), int(random(50, 150))); // Light Constructor
+    light2 = new Light(int(random(1, 255)), int(random(1, 255)), int(random(1, 255)), 1, int(random(10, 600)), int(random(10, 210)), int(random(50, 150))); // Light Constructor
+    light3 = new Light(int(random(1, 255)), int(random(1, 255)), int(random(1, 255)), 1, int(random(10, 600)), int(random(10, 210)), int(random(50, 150))); // Light Constructor
+    light4 = new Light(int(random(1, 255)), int(random(1, 255)), int(random(1, 255)), 1, int(random(10, 600)), int(random(10, 210)), int(random(50, 150))); // Light Constructor
 
     lightList.add(light1);
     lightList.add(light2);
