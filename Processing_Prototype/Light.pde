@@ -4,6 +4,7 @@ class Light {
     String room;
     float xpos;
     float ypos;
+    boolean selected;
 
     Light(int rLight, int gLight, int bLight, String startRoom, float xPos, float yPos, int dCircle) {
         redLight = rLight;
@@ -14,6 +15,7 @@ class Light {
         xpos = xPos;
         ypos = yPos;
         diameter = dCircle;
+        selected = false;
     }
 
     void display() {
@@ -22,6 +24,11 @@ class Light {
         noStroke();
         ellipseMode(CENTER);
         circle(xpos, ypos, diameter);
+        if(selected) {
+          stroke(255,255,0);
+          noFill();
+          circle(xpos, ypos, diameter);
+        }
     }
 
     public void changeColour(float red, float green, float blue) {
