@@ -110,7 +110,7 @@ void drawRoom() {
     // Room Walls
     int margin = 30;
     int roomX = margin + 6;
-    int roomY = 406;
+    int roomY = 506;
 
     // Translate (0,0) to the middle of the program
     pushMatrix();
