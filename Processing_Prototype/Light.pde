@@ -1,12 +1,12 @@
 class Light {
     int redLight, greenLight, blueLight, diameter;
     float opacity = 129.5;
-    String room;
+    int room;
     float xpos;
     float ypos;
     boolean selected;
 
-    Light(int rLight, int gLight, int bLight, String startRoom, float xPos, float yPos, int dCircle) {
+    Light(int rLight, int gLight, int bLight, int startRoom, float xPos, float yPos, int dCircle) {
         redLight = rLight;
         greenLight = gLight;
         blueLight = bLight;
