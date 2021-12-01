@@ -1,7 +1,7 @@
 class Light {
     int redLight, greenLight, blueLight, diameter;
     float opacity = 129.5;
-    int room;
+    int roomNo;
     float xpos;
     float ypos;
     boolean selected;
@@ -11,7 +11,7 @@ class Light {
         greenLight = gLight;
         blueLight = bLight;
 
-        room = startRoom;
+        roomNo = startRoom;
         xpos = xPos;
         ypos = yPos;
         diameter = dCircle;
