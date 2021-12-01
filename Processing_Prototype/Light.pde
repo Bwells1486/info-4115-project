@@ -17,6 +17,17 @@ class Light {
         diameter = dCircle;
         selected = false;
     }
+    
+    Light (int roomNum) {
+      redLight = int(random(1, 255));
+      greenLight = int(random(1, 255));
+      blueLight = int(random(1, 255));
+      roomNo = roomNum;
+      xpos = int(random(10, 600));
+      ypos = int(random(10, 210));
+      diameter = int(random(50, 150));
+      selected = false;
+    }    
 
     void display() {
         stroke(0);
