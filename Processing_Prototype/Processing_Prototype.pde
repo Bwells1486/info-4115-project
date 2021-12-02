@@ -13,6 +13,7 @@ int lightSize = 0;
 int circleX, circleY; // Position of circle button
 color previewColour = 255; // Color for preview
 color initialColour = 255; // Color for originally selected
+color backgroundColour = 0; // Color for background
 
 Textfield redInput;
 Textfield greenInput;
@@ -67,20 +68,20 @@ void setup() {
 public void setupChanger() {
     PFont font = createFont("arial", 20);
     
-    DropdownList droplist = cp5.addDropdownList("Room List").setPosition(240, 290);
-    droplist.setBarHeight(25);
-    droplist.setItemHeight(15);
-    droplist.setWidth(80);
-    droplist.addItem("Room 1", 1);
-    droplist.addItem("Room 2", 2);
-    droplist.addItem("Room 3", 3);
+    DropdownList droplist = cp5.addDropdownList("Room List").setPosition(240, 290)
+        .setBarHeight(25)
+        .setItemHeight(15)
+        .setWidth(80)
+        .addItem("Room 1", 1)
+        .addItem("Room 2", 2)
+        .addItem("Room 3", 3);
     
     cp5.addSlider("lightSize")
-     .setPosition(20,310)
-     .setSize(200,40)
-     .setRange(0,150)
-     .setValue(lightSize)
-     .setNumberOfTickMarks(15);
+        .setPosition(20,310)
+        .setSize(200,40)
+        .setRange(0,150)
+        .setValue(lightSize)
+        .setNumberOfTickMarks(15);
      
     cp5.getController("lightSize").getValueLabel().align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
     cp5.getController("lightSize").getCaptionLabel().align(ControlP5.RIGHT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
@@ -121,13 +122,19 @@ public void setupChanger() {
         .setPosition(240, 230)
         .setSize(80, 40)
         .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+        
+    cp5.addToggle("bg_Toggle")
+        .setPosition(240, 100)
+        .setSize(80,40)
+        .setValue(true)
+        .setMode(ControlP5.SWITCH);
 
     textFont(font);
 }
 
 void draw() {
 
-    background(0);
+    background(backgroundColour);
     fill(previewColour);
     text(textValue, 360, 180);
     ellipse(500, 184, 220, 220);
@@ -293,6 +300,14 @@ private float verifyColour(String text) {
         return Float.parseFloat(text);
     }
 }
+    
+void bg_Toggle(boolean theFlag) {
+  if(theFlag==true) {
+    backgroundColour = color(0);
+  } else {
+    backgroundColour = color(200);
+  }
+}    
     
 void controlEvent(ControlEvent theEvent) {
   if (theEvent.isGroup()) {
