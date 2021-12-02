@@ -47,6 +47,11 @@ class Light {
         greenLight = (int) green;
         blueLight = (int) blue;
     }
+    
+    public void changeSize(int circleSize) {
+        diameter = circleSize;
+    }
+
 
     public boolean mouseClicked() {
         return mousePressed && overCircle();
