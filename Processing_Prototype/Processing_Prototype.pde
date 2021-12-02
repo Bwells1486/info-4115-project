@@ -8,6 +8,7 @@ boolean circleOver = false;
 boolean editLight = false;
 boolean selectedLight = false;
 int roomSelected;
+int lightSize = 0;
 
 int circleX, circleY; // Position of circle button
 color previewColour = 255; // Color for preview
@@ -73,6 +74,16 @@ public void setupChanger() {
     droplist.addItem("Room 1", 1);
     droplist.addItem("Room 2", 2);
     droplist.addItem("Room 3", 3);
+    
+    cp5.addSlider("lightSize")
+     .setPosition(20,310)
+     .setSize(200,40)
+     .setRange(0,150)
+     .setValue(lightSize)
+     .setNumberOfTickMarks(15);
+     
+    cp5.getController("lightSize").getValueLabel().align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
+    cp5.getController("lightSize").getCaptionLabel().align(ControlP5.RIGHT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
 
     redInput = cp5.addTextfield("Red")
         .setPosition(20, 100)
@@ -131,6 +142,10 @@ void draw() {
     } if (roomSelected == 3) {
       room3.display();
     }
+    
+    if (currLight == null) {
+      cp5.getController("lightSize").setValue(0);
+    }    
 
     // Ensuring that only rgb values can be inputted
     validateTextField(redInput);
@@ -176,6 +191,9 @@ void mouseClicked() {
 
 public void save() {
 
+    // Change light size
+    currLight.changeSize(lightSize);
+
     //redraws lights, after checking room number
     currLight.changeColour(red(previewColour), green(previewColour), blue(previewColour));
     if (roomSelected == 1) {
@@ -201,6 +219,9 @@ public void clear() {
 
     previewColour = color(255);
     initialColour = color(255);
+    
+    lightSize = 0;
+    cp5.getController("lightSize").setValue(lightSize);    
 }
 
 void initializePreview(Light light) {
@@ -220,7 +241,8 @@ void initializePreview(Light light) {
 
     previewColour = color(red, green, blue);
     initialColour = color(red, green, blue);
-
+    
+    cp5.getController("lightSize").setValue(light.diameter);
 }
 
 public void updatePreview() {
