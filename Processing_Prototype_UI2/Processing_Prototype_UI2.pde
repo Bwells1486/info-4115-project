@@ -1,0 +1,305 @@
+import controlP5.*;
+import java.util.*;
+
+ControlP5 cp5;
+// NEED TO TAKE VALS AND PUT THEM ON THE ELLIPSE AS A COLOR
+boolean circleOver = false;
+boolean editLight = false;
+boolean selectedLight = false;
+int roomSelected;
+int lightSize = 0;
+
+Knob redKnob, greenKnob, blueKnob;
+
+int circleX, circleY; // Position of circle button
+color previewColour = 255; // Color for preview
+color initialColour = 255; // Color for originally selected
+color backgroundColour = 0; // Color for background
+
+Light light1, light2, light3, light4, light5, light6, light7, light8, light9, light10, light11, light12; // Add Lights
+List < Light > lightList = new ArrayList < Light > ();
+
+Room room1, room2, room3;
+List < Room > roomList = new ArrayList < Room > ();
+
+Light currLight;
+
+void setup() {
+    size(700, 650);
+
+    cp5 = new ControlP5(this);
+
+    roomSelected = 1; // Initial room selected
+    circleX = 20;
+    circleY = 20;
+
+    // Creating room 1 lights
+    lightList.add(light1 = new Light(1));
+    lightList.add(light2 = new Light(1));
+    lightList.add(light3 = new Light(1));
+    lightList.add(light4 = new Light(1));
+    
+    // Creating room 2 lights
+    lightList.add(light5 = new Light(2));
+    lightList.add(light6 = new Light(2));
+    lightList.add(light7 = new Light(2));
+    lightList.add(light8 = new Light(2));
+    
+    // Creating room 3 lights
+    lightList.add(light9 = new Light(3));
+    lightList.add(light10 = new Light(3));
+    lightList.add(light11 = new Light(3));
+    lightList.add(light12 = new Light(3));
+
+    // Create rooms
+    room1 = new Room(1, 1);
+    room2 = new Room(2, 2);
+    room3 = new Room(3, 3);
+    roomList.add(room1);
+    roomList.add(room2);
+    roomList.add(room3);
+    
+    setupChanger();
+}
+
+public void setupChanger() {
+    PFont font = createFont("arial", 20);
+    
+    DropdownList droplist = cp5.addDropdownList("Room List").setPosition(300, 550)
+        .setBarHeight(25)
+        .setItemHeight(15)
+        .setWidth(80)
+        .addItem("Room 1", 1)
+        .addItem("Room 2", 2)
+        .addItem("Room 3", 3);
+    
+    cp5.addSlider("lightSize")
+        .setPosition(20,525)
+        .setSize(175,40)
+        .setRange(0,150)
+        .setValue(lightSize)
+        .setNumberOfTickMarks(15);
+     
+    cp5.getController("lightSize").getValueLabel().align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
+    cp5.getController("lightSize").getCaptionLabel().align(ControlP5.RIGHT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
+
+    cp5.addBang("clear")
+        .setPosition(210, 525)
+        .setSize(80, 20)
+        .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+    cp5.addBang("save")
+        .setPosition(210, 550)
+        .setSize(80, 20)
+        .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+        
+    cp5.addToggle("bg_Toggle")
+        .setPosition(300, 525)
+        .setSize(80, 20)
+        .setValue(true)
+        .setMode(ControlP5.SWITCH)
+        .setLabel("");
+                
+    redKnob = cp5.addKnob("redValue")
+               .setRange(0,255)
+               .setValue(220)
+               .setPosition(20,400)
+               .setRadius(50)
+               .setNumberOfTickMarks(15)
+               .setTickMarkLength(4)
+               .snapToTickMarks(true)
+               .setColorForeground(color(255))
+               .setColorBackground(color(255, 0, 0))
+               .setColorActive(color(200))
+               .setDragDirection(Knob.HORIZONTAL);
+               
+    greenKnob = cp5.addKnob("greenValue")
+               .setRange(0,255)
+               .setValue(220)
+               .setPosition(150,400)
+               .setRadius(50)
+               .setNumberOfTickMarks(15)
+               .setTickMarkLength(4)
+               .snapToTickMarks(true)
+               .setColorForeground(color(255))
+               .setColorBackground(color(0, 255, 0))
+               .setColorActive(color(200))
+               .setDragDirection(Knob.HORIZONTAL);                    
+        
+    blueKnob = cp5.addKnob("blueValue")
+               .setRange(0,255)
+               .setValue(220)
+               .setPosition(280,400)
+               .setRadius(50)
+               .setNumberOfTickMarks(15)
+               .setTickMarkLength(4)
+               .snapToTickMarks(true)
+               .setColorForeground(color(255))
+               .setColorBackground(color(0, 0, 255))
+               .setColorActive(color(200))
+               .setDragDirection(Knob.HORIZONTAL);     
+
+    textFont(font);
+}
+
+void draw() {
+
+    background(backgroundColour);
+    fill(previewColour);
+    ellipse(510, 494, 200, 200);
+    fill(initialColour);
+    ellipse(630, 400, 75, 75);
+
+    // For deciding which room is selected
+    if (roomSelected == 1) {
+      room1.display();
+    } else if (roomSelected == 2) {
+      room2.display();
+    } if (roomSelected == 3) {
+      room3.display();
+    }
+    
+    if (currLight == null) {
+      cp5.getController("lightSize").setValue(0);
+      cp5.getController("redValue").setValue(0);
+      cp5.getController("greenValue").setValue(0);
+      cp5.getController("blueValue").setValue(0);
+    }
+    
+}
+
+void update() {
+    if (currLight == null)
+        getSelectedLight();
+    else
+        updatePreview();
+}
+
+void getSelectedLight() {
+    for (Light light: lightList) {
+        // Makes sure light in current room are only selectable
+        if ((light.mouseClicked()) && (light.roomNo == roomSelected)) { 
+            currLight = light;
+            currLight.selected = true;
+            selectedLight = true;
+            break;
+        }
+    }
+}
+
+void drawLights(int roomNum) {
+    for (Light light: lightList)
+      // Makes sure to only draw lights within the room selected.
+      if (light.roomNo == roomNum) {
+        light.display();
+      }
+}
+
+void mouseClicked() {
+    if (currLight != null && selectedLight) {
+        initializePreview(currLight);
+        selectedLight = false;
+    }
+
+}
+
+public void save() {
+
+    // Change light size
+    currLight.changeSize(lightSize);
+  
+    // redraws lights, after checking room number
+    currLight.changeColour(red(previewColour), green(previewColour), blue(previewColour));
+    if (roomSelected == 1) {
+      drawLights(room1.roomNo);
+    } if (roomSelected == 2) {
+      drawLights(room2.roomNo);
+    } if (roomSelected == 3) {
+      drawLights(room3.roomNo);
+    } 
+
+    clear();
+}
+
+public void clear() {
+
+    editLight = false;
+    currLight.selected = false;
+    currLight = null;
+
+    previewColour = color(255);
+    initialColour = color(255);
+    
+    lightSize = 0;
+    cp5.getController("redValue").setColorBackground(color(255, 0, 0));
+    cp5.getController("greenValue").setColorBackground(color(0, 255, 0));
+    cp5.getController("blueValue").setColorBackground(color(0, 0, 255));    
+    
+}
+
+void initializePreview(Light light) {
+
+    int red = light.redLight;
+    int green = light.greenLight;
+    int blue = light.blueLight;
+    
+    cp5.getController("redValue").setValue(red);
+    cp5.getController("redValue").setColorBackground(color(red, 0, 0));
+    
+    cp5.getController("greenValue").setValue(green);
+    cp5.getController("greenValue").setColorBackground(color(0, green, 0));    
+
+    cp5.getController("blueValue").setValue(blue);
+    cp5.getController("blueValue").setColorBackground(color(0, 0, blue));    
+
+    previewColour = color(red, green, blue);
+    initialColour = color(red, green, blue);
+    
+    cp5.getController("lightSize").setValue(light.diameter);
+
+}
+
+public void updatePreview() {
+  
+    float redColour = cp5.getController("redValue").getValue();
+    float greenColour = cp5.getController("greenValue").getValue();
+    float blueColour = cp5.getController("blueValue").getValue();
+
+    previewColour = color(redColour, greenColour, blueColour);
+        
+    cp5.getController("redValue").setColorBackground(color(redColour, 0, 0));
+    cp5.getController("greenValue").setColorBackground(color(0, greenColour, 0));
+    cp5.getController("blueValue").setColorBackground(color(0, 0, blueColour));
+    
+}
+
+void bg_Toggle(boolean theFlag) {
+  if(theFlag==true) {
+    backgroundColour = color(0);
+  } else {
+    backgroundColour = color(200);
+  }
+}
+    
+void controlEvent(ControlEvent theEvent) {
+  if (theEvent.isGroup()) {
+    println("event from group : "+theEvent.getGroup().getValue()+" from "+theEvent.getGroup());
+  } 
+  else if (theEvent.isController()) {
+    if (theEvent.getController().getName() == "Room List" ) {
+      if (theEvent.getController().getValue()==0) {
+        roomSelected = 1;
+      } else if (theEvent.getController().getValue()==1) {
+        roomSelected = 2;
+      } else if (theEvent.getController().getValue()==2) {
+        roomSelected = 3;
+      }
+    }
+  }
+}    
+    
+    
+    
+    
+    
+    
