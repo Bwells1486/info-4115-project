@@ -3,7 +3,6 @@ import java.util.*;
 
 ControlP5 cp5;
 // NEED TO TAKE VALS AND PUT THEM ON THE ELLIPSE AS A COLOR
-String textValue = "";
 boolean circleOver = false;
 boolean editLight = false;
 boolean selectedLight = false;
@@ -14,6 +13,7 @@ int circleX, circleY; // Position of circle button
 color previewColour = 255; // Color for preview
 color initialColour = 255; // Color for originally selected
 color backgroundColour = 0; // Color for background
+color menuColour = 200;
 
 Textfield redInput;
 Textfield greenInput;
@@ -135,8 +135,10 @@ public void setupChanger() {
 void draw() {
 
     background(backgroundColour);
+    stroke(1);
+    fill(menuColour);
+    rect(10, 30, 675, 375);
     fill(previewColour);
-    text(textValue, 360, 180);
     ellipse(500, 184, 220, 220);
     fill(initialColour);
     ellipse(630, 90, 75, 75);
@@ -304,8 +306,10 @@ private float verifyColour(String text) {
 void bg_Toggle(boolean theFlag) {
   if(theFlag==true) {
     backgroundColour = color(0);
+    menuColour = color(200);
   } else {
     backgroundColour = color(200);
+    menuColour = color(0);
   }
 }    
     
