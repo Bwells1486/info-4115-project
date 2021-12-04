@@ -15,6 +15,7 @@ int circleX, circleY; // Position of circle button
 color previewColour = 255; // Color for preview
 color initialColour = 255; // Color for originally selected
 color backgroundColour = 0; // Color for background
+color menuColour = 200;
 
 Light light1, light2, light3, light4, light5, light6, light7, light8, light9, light10, light11, light12; // Add Lights
 List < Light > lightList = new ArrayList < Light > ();
@@ -145,6 +146,9 @@ public void setupChanger() {
 void draw() {
 
     background(backgroundColour);
+    stroke(1);
+    fill(menuColour);
+    rect(10, 350, 675, 275);    
     fill(previewColour);
     ellipse(510, 494, 200, 200);
     fill(initialColour);
@@ -276,8 +280,10 @@ public void updatePreview() {
 void bg_Toggle(boolean theFlag) {
   if(theFlag==true) {
     backgroundColour = color(0);
+    menuColour = color(200);
   } else {
     backgroundColour = color(200);
+    menuColour = color(0);    
   }
 }
     
